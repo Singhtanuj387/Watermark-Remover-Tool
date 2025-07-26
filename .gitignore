@@ -1,0 +1,35 @@
+# Python virtual environment
+venv/
+env/
+.env/
+
+# Python bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Distribution / packaging
+dist/
+build/
+*.egg-info/
+
+# Logs
+*.log
+
+# Local development settings
+.env
+.env.local
+
+# IDE specific files
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Uploaded and processed videos
+uploads/
+outputs/
+
+# OS specific
+.DS_Store
+Thumbs.db

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Direct Video Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        video {
+            width: 100%;
+            max-height: 500px;
+            background: #000;
+        }
+        .error {
+            color: red;
+            background: #ffeeee;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+            display: none;
+        }
+        .video-container {
+            margin-bottom: 30px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Direct Video Test</h1>
+    
+    <div class="video-container">
+        <h2>1. Direct Video Route</h2>
+        <video id="directVideo" controls>
+            <source src="/direct_video/processed_Enchanted_Sword_Emerges_From_Mirror_395a56869d124c419f08382c092445ae.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+        <div id="directError" class="error"></div>
+    </div>
+    
+    <div class="video-container">
+        <h2>2. Standard Video Route</h2>
+        <video id="standardVideo" controls>
+            <source src="/video/processed_Enchanted_Sword_Emerges_From_Mirror_395a56869d124c419f08382c092445ae.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+        <div id="standardError" class="error"></div>
+    </div>
+    
+    <div class="video-container">
+        <h2>3. Video with Timestamp</h2>
+        <video id="timestampVideo" controls>
+            <source src="/video/processed_Enchanted_Sword_Emerges_From_Mirror_395a56869d124c419f08382c092445ae.mp4?t=123456" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+        <div id="timestampError" class="error"></div>
+    </div>
+    
+    <h2>Download Link</h2>
+    <p>If videos don't play, try downloading:</p>
+    <a href="/download/processed_Enchanted_Sword_Emerges_From_Mirror_395a56869d124c419f08382c092445ae.mp4" download>Download Video</a>
+    
+    <script>
+        function handleVideoError(videoElement, errorDiv) {
+            videoElement.addEventListener('error', function(e) {
+                console.error('Video error:', videoElement.error);
+                errorDiv.style.display = 'block';
+                errorDiv.textContent = 'Error loading video: ' + 
+                    (videoElement.error ? videoElement.error.message : 'unknown error');
+            });
+            
+            videoElement.addEventListener('loadeddata', function() {
+                console.log(videoElement.id + ' loaded successfully');
+            });
+        }
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            const directVideo = document.getElementById('directVideo');
+            const directError = document.getElementById('directError');
+            handleVideoError(directVideo, directError);
+            
+            const standardVideo = document.getElementById('standardVideo');
+            const standardError = document.getElementById('standardError');
+            handleVideoError(standardVideo, standardError);
+            
+            const timestampVideo = document.getElementById('timestampVideo');
+            const timestampError = document.getElementById('timestampError');
+            handleVideoError(timestampVideo, timestampError);
+        });
+    </script>
+</body>
+</html>

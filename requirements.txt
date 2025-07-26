@@ -1,0 +1,8 @@
+flask
+opencv-python
+numpy
+Werkzeug
+python-dotenv
+ffmpeg-python
+scipy
+imageio

@@ -1,0 +1,185 @@
+/* Custom styles for Video Watermark Remover */
+
+body {
+    background-color: #f8f9fa;
+    color: #212529;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.container {
+    max-width: 1200px;
+}
+
+/* Header styles */
+header h1 {
+    color: #0d6efd;
+    font-weight: 600;
+}
+
+header p.lead {
+    color: #6c757d;
+}
+
+/* Card styles */
+.card {
+    border-radius: 10px;
+    border: none;
+    overflow: hidden;
+}
+
+.card-header {
+    font-weight: 600;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+}
+
+/* Form styles */
+.form-label.fw-bold {
+    color: #495057;
+}
+
+.form-control:focus {
+    border-color: #86b7fe;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+.form-check-input:checked {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+}
+
+/* Button styles */
+.btn-primary {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    background-color: #0b5ed7;
+    border-color: #0a58ca;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.btn-outline-secondary {
+    color: #6c757d;
+    border-color: #6c757d;
+    transition: all 0.3s ease;
+}
+
+.btn-outline-secondary:hover {
+    background-color: #6c757d;
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Video player styles */
+video {
+    border-radius: 5px;
+    background-color: #000;
+    width: 100%;
+    height: auto;
+    max-height: 70vh;
+    object-fit: contain;
+}
+
+.ratio-16x9 {
+    position: relative;
+    width: 100%;
+    height: 0;
+    padding-bottom: 56.25%; /* 16:9 aspect ratio */
+    background-color: #000;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.ratio-16x9 video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+#video-error {
+    margin-top: 15px;
+    padding: 15px;
+    border-radius: 5px;
+    background-color: #ffeeee;
+    color: #842029;
+    border: 1px solid #f5c2c7;
+}
+
+/* Footer styles */
+footer {
+    color: #6c757d;
+    font-size: 0.9rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    header {
+        margin-top: 2rem !important;
+        margin-bottom: 2rem !important;
+    }
+    
+    header h1 {
+        font-size: 2rem;
+    }
+    
+    .btn-lg {
+        padding: 0.5rem 1rem;
+        font-size: 1rem;
+    }
+}
+
+/* Animation for form elements */
+.form-control, .form-check-input, .btn {
+    transition: all 0.2s ease-in-out;
+}
+
+.form-control:hover {
+    border-color: #86b7fe;
+}
+
+/* Custom file input styling */
+input[type="file"] {
+    padding: 0.75rem;
+}
+
+/* Alert styling */
+.alert {
+    border-radius: 8px;
+    border: none;
+}
+
+.alert-danger {
+    background-color: #f8d7da;
+    color: #842029;
+}
+
+/* List styling */
+ol li, ul li {
+    padding: 0.25rem 0;
+}
+
+/* Loading indicator styles */
+.loading-indicator {
+    z-index: 10;
+    background-color: rgba(0, 0, 0, 0.5);
+    border-radius: 5px;
+    padding: 20px;
+}
+
+.spinner-border {
+    width: 3rem;
+    height: 3rem;
+}
+
+/* Video player performance optimizations */
+video {
+    will-change: transform;
+    transform: translateZ(0);
+}

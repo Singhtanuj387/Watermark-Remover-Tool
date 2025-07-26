@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Watermark Remover</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header class="text-center my-5">
+            <h1 class="display-4">Video Watermark Remover</h1>
+            <p class="lead">Upload your video and remove unwanted watermarks with ease</p>
+        </header>
+
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card shadow-lg">
+                    <div class="card-body">
+                        {% with messages = get_flashed_messages() %}
+                            {% if messages %}
+                                <div class="alert alert-danger">
+                                    <ul class="mb-0">
+                                        {% for message in messages %}
+                                            <li>{{ message }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            {% endif %}
+                        {% endwith %}
+
+                        <form action="{{ url_for('upload_file') }}" method="post" enctype="multipart/form-data">
+                            <div class="mb-4">
+                                <label for="video" class="form-label fw-bold">Select Video File</label>
+                                <input type="file" class="form-control" id="video" name="video" accept=".mp4,.avi,.mov,.wmv,.mkv" required>
+                                <div class="form-text">Supported formats: MP4, AVI, MOV, WMV, MKV (Max size: 500MB)</div>
+                            </div>
+
+                            <div class="mb-4">
+                                <label class="form-label fw-bold">Watermark Removal Method</label>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="method" id="inpaint" value="inpaint" checked>
+                                    <label class="form-check-label" for="inpaint">
+                                        Inpaint (Best for logos and text watermarks)
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="method" id="blend" value="blend">
+                                    <label class="form-check-label" for="blend">
+                                        Blend (Best for semi-transparent watermarks)
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="method" id="frequency" value="frequency">
+                                    <label class="form-check-label" for="frequency">
+                                        Frequency (Best for regular pattern watermarks)
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="method" id="exemplar" value="exemplar">
+                                    <label class="form-check-label" for="exemplar">
+                                        Exemplar (Best for complex watermarks, slower processing)
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="method" id="auto" value="auto">
+                                    <label class="form-check-label" for="auto">
+                                        Auto (Automatically select the best method)
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="mb-4">
+                                <label class="form-label fw-bold">Watermark Location</label>
+                                <div class="form-check form-switch mb-2">
+                                    <input class="form-check-input" type="checkbox" id="useAutoDetect" name="use_auto_detect" checked>
+                                    <label class="form-check-label" for="useAutoDetect">Auto-detect Watermark Location</label>
+                                </div>
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="useCustomCoords" name="use_custom_coords">
+                                    <label class="form-check-label" for="useCustomCoords">Specify Custom Watermark Location</label>
+                                </div>
+                                <div id="coordsInputs" class="mt-3 d-none">
+                                    <div class="row g-2">
+                                        <div class="col-md-3">
+                                            <label for="x" class="form-label">X Position</label>
+                                            <input type="number" class="form-control" id="x" name="x" value="0" min="0">
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label for="y" class="form-label">Y Position</label>
+                                            <input type="number" class="form-control" id="y" name="y" value="0" min="0">
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label for="width" class="form-label">Width</label>
+                                            <input type="number" class="form-control" id="width" name="width" value="100" min="1">
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label for="height" class="form-label">Height</label>
+                                            <input type="number" class="form-control" id="height" name="height" value="50" min="1">
+                                        </div>
+                                    </div>
+                                    <div class="form-text mt-2">
+                                        Specify the coordinates and size of the watermark region. X and Y are the top-left corner coordinates.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="d-grid gap-2">
+                                <button type="submit" class="btn btn-primary btn-lg">Remove Watermark</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="card mt-4 shadow-lg">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0">How It Works</h5>
+                    </div>
+                    <div class="card-body">
+                        <ol class="mb-0">
+                            <li class="mb-2">Upload your video file (MP4, AVI, MOV, WMV, or MKV format)</li>
+                            <li class="mb-2">Select the appropriate watermark removal method based on your watermark type</li>
+                            <li class="mb-2">Optionally specify the exact location of the watermark for better results</li>
+                            <li class="mb-2">Click "Remove Watermark" and wait for processing to complete</li>
+                            <li>Download your watermark-free video</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="text-center mt-5 mb-4">
+        <p class="text-muted">Video Watermark Remover &copy; {{ now.year }}. All rights reserved.</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Show/hide custom coordinates inputs
+        document.getElementById('useCustomCoords').addEventListener('change', function() {
+            const coordsInputs = document.getElementById('coordsInputs');
+            const autoDetect = document.getElementById('useAutoDetect');
+            
+            if (this.checked) {
+                coordsInputs.classList.remove('d-none');
+                autoDetect.checked = false;
+            } else {
+                coordsInputs.classList.add('d-none');
+            }
+        });
+        
+        // Auto-detect and custom coords are mutually exclusive
+        document.getElementById('useAutoDetect').addEventListener('change', function() {
+            const customCoords = document.getElementById('useCustomCoords');
+            const coordsInputs = document.getElementById('coordsInputs');
+            
+            if (this.checked) {
+                customCoords.checked = false;
+                coordsInputs.classList.add('d-none');
+            }
+        });
+    </script>
+</body>
+</html>

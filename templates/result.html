@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Watermark Removal Complete</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <!-- HLS.js for adaptive streaming -->
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+</head>
+<body>
+    <div class="container">
+        <header class="text-center my-5">
+            <h1 class="display-4">Watermark Removal Complete</h1>
+            <p class="lead">Your video has been processed successfully</p>
+        </header>
+
+        <div class="row justify-content-center">
+            <div class="col-md-10">
+                <div class="card shadow-lg">
+                    <div class="card-body">
+                        <h2 class="card-title text-center mb-4">Preview Your Video</h2>
+                        
+                        <div class="ratio ratio-16x9 mb-4 position-relative">
+                            <div id="loading-indicator" class="loading-indicator position-absolute top-50 start-50 translate-middle">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                                <div class="text-white text-center mt-2">Loading video...</div>
+                            </div>
+                            <video id="video-player" controls preload="metadata" class="w-100 h-100" playsinline crossorigin="anonymous">
+                                {% set file_ext = filename.split('.')[-1].lower() %}
+                                {% set video_url = url_for('video', filename=filename) %}
+                                {% set filename_base = filename.split('.')[0].replace('processed_', '') %}
+                                {% if file_ext == 'mp4' %}
+                                <source src="{{ video_url }}?t={{ now.timestamp() }}" type="video/mp4">
+                                {% elif file_ext == 'avi' %}
+                                <source src="{{ video_url }}?t={{ now.timestamp() }}" type="video/x-msvideo">
+                                {% elif file_ext == 'mov' %}
+                                <source src="{{ video_url }}?t={{ now.timestamp() }}" type="video/quicktime">
+                                {% elif file_ext == 'wmv' %}
+                                <source src="{{ video_url }}?t={{ now.timestamp() }}" type="video/x-ms-wmv">
+                                {% elif file_ext == 'mkv' %}
+                                <source src="{{ video_url }}?t={{ now.timestamp() }}" type="video/x-matroska">
+                                {% else %}
+                                <source src="{{ video_url }}?t={{ now.timestamp() }}" type="video/mp4">
+                                {% endif %}
+                                Your browser does not support the video tag or the video format.
+                            </video>
+                            <div id="video-error" style="display: none;" class="alert alert-danger mt-3 position-absolute bottom-0 start-0 end-0">
+                                <p><strong>Error loading video.</strong> The video file may be corrupted or in an unsupported format.</p>
+                                <p>Video URL: <a href="{{ url_for('video', filename=filename) }}" target="_blank">{{ url_for('video', filename=filename) }}</a></p>
+                                <p>Try downloading the file directly instead:</p>
+                                <a href="{{ url_for('download', filename=filename) }}" class="btn btn-primary">Download Video</a>
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex justify-content-center gap-3 mb-4">
+                            <a href="{{ url_for('download', filename=filename) }}" class="btn btn-primary btn-lg">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-download me-2" viewBox="0 0 16 16">
+                                    <path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/>
+                                    <path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/>
+                                </svg>
+                                Download Video
+                            </a>
+                            <a href="{{ url_for('index') }}" class="btn btn-outline-secondary btn-lg">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-left me-2" viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8z"/>
+                                </svg>
+                                Process Another Video
+                            </a>
+                        </div>
+                        
+                        <div class="card mb-4">
+                            <div class="card-header bg-light">
+                                <h5 class="mb-0">Playback Options</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-check form-switch mb-3">
+                                            <input class="form-check-input" type="checkbox" id="use-hls" checked>
+                                            <label class="form-check-label" for="use-hls">Use Adaptive Streaming (HLS)</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <select id="quality-selector" class="form-select">
+                                            <option value="-1">Auto</option>
+                                            <option value="0">High (720p)</option>
+                                            <option value="1">Medium (480p)</option>
+                                            <option value="2">Low (360p)</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card mt-4 shadow-lg">
+                    <div class="card-header bg-light">
+                        <h5 class="mb-0">Important Notes</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="mb-0">
+                            <li class="mb-2">Your processed video will be available for download for the next 24 hours.</li>
+                            <li class="mb-2">After 24 hours, both the original and processed videos will be automatically deleted from our servers.</li>
+                            <li class="mb-2">If you're not satisfied with the results, try processing again with a different removal method or by specifying the exact watermark location.</li>
+                            <li>For best results with static watermarks, use the "Inpaint" method and specify the exact coordinates of the watermark.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="text-center mt-5 mb-4">
+        <p class="text-muted">Video Watermark Remover &copy; {{ now.year }}. All rights reserved.</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='js/video-analytics.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/hls-config.js') }}"></script>
+    <script>
+        // Video player error handling
+        document.addEventListener('DOMContentLoaded', function() {
+            const videoElement = document.getElementById('video-player');
+            const videoErrorDiv = document.getElementById('video-error');
+            const loadingIndicator = document.getElementById('loading-indicator');
+            const useHlsSwitch = document.getElementById('use-hls');
+            const qualitySelector = document.getElementById('quality-selector');
+            let retryCount = 0;
+            const maxRetries = 3;
+            let hlsManager = null;
+            
+            if (videoElement) {
+                console.log('Video element found in DOM');
+                console.log('Video source:', videoElement.querySelector('source').src);
+                
+                // Hide loading indicator when video can play
+                function hideLoadingIndicator() {
+                    if (loadingIndicator) {
+                        loadingIndicator.style.display = 'none';
+                    }
+                }
+                
+                // Initialize video analytics
+                const analytics = new VideoAnalytics(videoElement, {
+                    debugMode: true,
+                    sampleInterval: 10000
+                });
+                
+                // Setup HLS if available
+                function setupHLS() {
+                    if (useHlsSwitch.checked && Hls.isSupported()) {
+                        // Get filename base without extension and 'processed_' prefix
+                        const sourceElement = videoElement.querySelector('source');
+                        if (sourceElement) {
+                            // Initialize HLS manager
+                            hlsManager = new HLSManager(videoElement, {
+                                autoplay: false,
+                                debug: true
+                            });
+                            
+                            // Setup quality selector
+                            qualitySelector.addEventListener('change', function() {
+                                if (hlsManager) {
+                                    hlsManager.setQualityLevel(parseInt(this.value));
+                                }
+                            });
+                        }
+                    }
+                }
+                
+                // Toggle between HLS and direct video
+                useHlsSwitch.addEventListener('change', function() {
+                    if (this.checked) {
+                        setupHLS();
+                    } else {
+                        // Destroy HLS and revert to original source
+                        if (hlsManager) {
+                            hlsManager.fallbackToOriginal();
+                            hlsManager = null;
+                        }
+                        qualitySelector.disabled = true;
+                    }
+                });
+                
+                // Initialize HLS by default if supported
+                setupHLS();
+                
+                // Log when video is loaded
+                videoElement.addEventListener('loadeddata', function() {
+                    console.log('Video loaded successfully');
+                    hideLoadingIndicator();
+                });
+                
+                // Log when video metadata is loaded
+                videoElement.addEventListener('loadedmetadata', function() {
+                    console.log('Video metadata loaded successfully');
+                    console.log('Video dimensions:', videoElement.videoWidth, 'x', videoElement.videoHeight);
+                    console.log('Video duration:', videoElement.duration, 'seconds');
+                });
+                
+                // Log when video can play
+                videoElement.addEventListener('canplay', function() {
+                    console.log('Video can now play');
+                    hideLoadingIndicator();
+                });
+                
+                // Handle video errors with retry logic
+                videoElement.addEventListener('error', function(e) {
+                    console.error('Video error:', videoElement.error);
+                    console.error('Error code:', videoElement.error ? videoElement.error.code : 'unknown');
+                    console.error('Error message:', videoElement.error ? videoElement.error.message : 'unknown');
+                    
+                    // Map error codes to human-readable messages
+                    const errorMessages = {
+                        1: 'The video loading was aborted',
+                        2: 'Network error while loading the video',
+                        3: 'Error decoding the video',
+                        4: 'Video format not supported'
+                    };
+                    
+                    const errorCode = videoElement.error ? videoElement.error.code : 0;
+                    const errorMessage = errorMessages[errorCode] || 'Unknown error occurred';
+                    
+                    if (retryCount < maxRetries) {
+                        retryCount++;
+                        console.log(`Retry attempt ${retryCount} of ${maxRetries}...`);
+                        
+                        // Exponential backoff for retries
+                        const backoffTime = Math.pow(2, retryCount) * 1000;
+                        console.log(`Waiting ${backoffTime}ms before retry`);
+                        
+                        setTimeout(function() {
+                            console.log('Attempting alternative loading method...');
+                            
+                            // If using HLS and it fails, try direct video
+                            if (useHlsSwitch.checked && retryCount === 1) {
+                                console.log('HLS failed, trying direct video');
+                                useHlsSwitch.checked = false;
+                                if (hlsManager) {
+                                    hlsManager.fallbackToOriginal();
+                                    hlsManager = null;
+                                }
+                                qualitySelector.disabled = true;
+                            } else {
+                                // Otherwise refresh the source with a new timestamp
+                                const currentSrc = videoElement.querySelector('source').src;
+                                // Remove any existing timestamp parameter
+                                const baseUrl = currentSrc.split('?')[0];
+                                // Add a new timestamp parameter
+                                videoElement.querySelector('source').src = baseUrl + '?t=' + new Date().getTime();
+                                videoElement.load();
+                            }
+                        }, backoffTime);
+                    } else {
+                        console.error('Maximum retry attempts reached');
+                        if (videoErrorDiv) {
+                            videoErrorDiv.style.display = 'block';
+                            videoErrorDiv.querySelector('p:first-child').innerHTML = 
+                                `<strong>Error loading video:</strong> ${errorMessage} (Code: ${errorCode})`;
+                        }
+                        hideLoadingIndicator();
+                    }
+                });
+                
+                // Force reload if video doesn't load within 5 seconds
+                setTimeout(function() {
+                    if (videoElement.readyState === 0) {
+                        console.log('Video not loading, attempting to reload source');
+                        const currentSrc = videoElement.querySelector('source').src;
+                        // Remove any existing timestamp parameter
+                        const baseUrl = currentSrc.split('?')[0];
+                        // Add a new timestamp parameter
+                        videoElement.querySelector('source').src = baseUrl + '?t=' + new Date().getTime();
+                        videoElement.load();
+                    }
+                }, 5000);
+            } else {
+                console.error('Video element not found in DOM');
+            }
+        });
+    </script>
+</body>
+</html>

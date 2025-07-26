@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Test Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        video {
+            width: 100%;
+            max-height: 500px;
+            background: #000;
+        }
+        .error {
+            color: red;
+            background: #ffeeee;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>Video Test Page</h1>
+    
+    <h2>Direct Video Tag</h2>
+    <video id="video1" controls>
+        <source src="/video/processed_Enchanted_Sword_Emerges_From_Mirror_395a56869d124c419f08382c092445ae.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+    <div id="error1" class="error"></div>
+    
+    <h2>Direct Video Route</h2>
+    <video id="video3" controls>
+        <source src="/direct_video/processed_Enchanted_Sword_Emerges_From_Mirror_395a56869d124c419f08382c092445ae.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+    <div id="error3" class="error"></div>
+    
+    <h2>Video with Timestamp</h2>
+    <video id="video2" controls>
+        <source src="/video/processed_Enchanted_Sword_Emerges_From_Mirror_395a56869d124c419f08382c092445ae.mp4?t=123456" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+    <div id="error2" class="error"></div>
+    
+    <h2>Video with Download Link</h2>
+    <p>If videos above don't work, try downloading:</p>
+    <a href="/download/processed_Enchanted_Sword_Emerges_From_Mirror_395a56869d124c419f08382c092445ae.mp4" download>Download Video</a>
+    
+    <script>
+        function handleVideoError(videoElement, errorDiv) {
+            videoElement.addEventListener('error', function(e) {
+                console.error('Video error:', videoElement.error);
+                errorDiv.style.display = 'block';
+                errorDiv.textContent = 'Error loading video: ' + 
+                    (videoElement.error ? videoElement.error.message : 'unknown error');
+            });
+        }
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            const video1 = document.getElementById('video1');
+            const error1 = document.getElementById('error1');
+            handleVideoError(video1, error1);
+            
+            const video2 = document.getElementById('video2');
+            const error2 = document.getElementById('error2');
+            handleVideoError(video2, error2);
+            
+            const video3 = document.getElementById('video3');
+            const error3 = document.getElementById('error3');
+            handleVideoError(video3, error3);
+            
+            // Log when videos are loaded
+            video1.addEventListener('loadeddata', function() {
+                console.log('Video 1 loaded successfully');
+            });
+            
+            video2.addEventListener('loadeddata', function() {
+                console.log('Video 2 loaded successfully');
+            });
+            
+            video3.addEventListener('loadeddata', function() {
+                console.log('Video 3 loaded successfully');
+            });
+        });
+    </script>
+</body>
+</html>
